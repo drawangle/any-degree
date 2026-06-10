@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google AdSense（審査通過後に貼る） -->
+  <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR-ID"
+     crossorigin="anonymous"></script>-->
+</head>
+
+<body>
+  <input type="text" inputmode="numeric" id="num" placeholder="半径を入力">
+  <button onclick="draw()">描画</button>
+
+  <!-- 広告枠 -->
+  <!--
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="YOUR-ID"
+       data-ad-slot="1234567890"
+       data-ad-format="auto"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <div id="svgArea"></div>
+
+  <script>
+    function draw() {
+      const r = Number(document.getElementById("num").value);
+      const svg = `
+        <svg width="300" height="300">
+          <circle cx="150" cy="150" r="${r}" fill="skyblue" stroke="black"/>
+        </svg>`;
+      document.getElementById("svgArea").innerHTML = svg;
+    }
+  </script>
+</body>
+</html>
