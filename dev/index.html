@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <title>Redirecting...</title>
   <script>
+    const path = window.location.pathname.split("/")[1]; // repo名
     const lang = (navigator.language || "en").slice(0, 2);
     const supported = ["en", "ja", "zh"];
     const target = supported.includes(lang) ? lang : "en";
-    location.href = `/${target}/index.html`;
+    location.href = `/${path}/${target}/index.html`;
   </script>
 </head>
 <body>
