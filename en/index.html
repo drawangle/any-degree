@@ -1,0 +1,12 @@
+<h1 id="title"></h1>
+<p id="desc"></p>
+
+<script>
+async function loadLang() {
+  const res = await fetch("/lang/en.json");
+  const dict = await res.json();
+  document.getElementById("title").textContent = dict.title;
+  document.getElementById("desc").textContent = dict.description;
+}
+loadLang();
+</script>
