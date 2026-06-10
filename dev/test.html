@@ -20,7 +20,50 @@
     }
     
   </style>
-  <script type="text/javascript">
+</head>
+
+<body>
+  <div class="slider-wrapper">
+    <svg id="arc-slider" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="200" r="150" fill="none" stroke="#e0e0e0" stroke-width="12" stroke-dasharray="700 300" stroke-dashoffset="150" transform="rotate(90 200 200)" />
+      
+      <g id="slider-knob" transform="rotate(0, 200, 200)">
+        <line x1="200" y1="200" x2="200" y2="35" stroke="#4facfe" stroke-width="8" stroke-linecap="round" />
+        <circle cx="200" cy="35" r="14" fill="#ffffff" stroke="#00f2fe" stroke-width="4" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.3))" />
+      </g>
+  
+      <text x="200" y="215" text-anchor="middle" font-family="sans-serif" font-size="48" font-weight="bold" fill="#333" id="angle-display">0°</text>
+    </svg>
+  </div>
+  <hr>
+
+
+  
+  <input type="text" inputmode="numeric" id="num" placeholder="半径を入力">
+  <button onclick="draw()">描画</button>
+
+  <!-- 広告枠 -->
+  <!--
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="YOUR-ID"
+       data-ad-slot="1234567890"
+       data-ad-format="auto"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <div id="svgArea"></div>
+
+  <script>
+    function draw() {
+      const r = Number(document.getElementById("num").value);
+      const svg = `
+        <svg width="300" height="300">
+          <circle cx="150" cy="150" r="${r}" fill="skyblue" stroke="black"/>
+        </svg>`;
+      document.getElementById("svgArea").innerHTML = svg;
+    }
+  </script>
+    <script type="text/javascript">
     const slider = document.getElementById('arc-slider');
     const knob = document.getElementById('slider-knob');
     const display = document.getElementById('angle-display');
@@ -83,48 +126,6 @@
 
     
   </script>
-</head>
 
-<body>
-  <div class="slider-wrapper">
-    <svg id="arc-slider" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="200" cy="200" r="150" fill="none" stroke="#e0e0e0" stroke-width="12" stroke-dasharray="700 300" stroke-dashoffset="150" transform="rotate(90 200 200)" />
-      
-      <g id="slider-knob" transform="rotate(0, 200, 200)">
-        <line x1="200" y1="200" x2="200" y2="35" stroke="#4facfe" stroke-width="8" stroke-linecap="round" />
-        <circle cx="200" cy="35" r="14" fill="#ffffff" stroke="#00f2fe" stroke-width="4" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.3))" />
-      </g>
-  
-      <text x="200" y="215" text-anchor="middle" font-family="sans-serif" font-size="48" font-weight="bold" fill="#333" id="angle-display">0°</text>
-    </svg>
-  </div>
-  <hr>
-
-
-  
-  <input type="text" inputmode="numeric" id="num" placeholder="半径を入力">
-  <button onclick="draw()">描画</button>
-
-  <!-- 広告枠 -->
-  <!--
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="YOUR-ID"
-       data-ad-slot="1234567890"
-       data-ad-format="auto"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  -->
-  <div id="svgArea"></div>
-
-  <script>
-    function draw() {
-      const r = Number(document.getElementById("num").value);
-      const svg = `
-        <svg width="300" height="300">
-          <circle cx="150" cy="150" r="${r}" fill="skyblue" stroke="black"/>
-        </svg>`;
-      document.getElementById("svgArea").innerHTML = svg;
-    }
-  </script>
 </body>
 </html>
