@@ -3,7 +3,8 @@
 
 <script>
 async function loadLang() {
-  const res = await fetch("/lang/zh.json");
+  const path = window.location.pathname.split("/")[1]; // repo name
+  const res = await fetch(`/${path}/lang/zh.json`);
   const dict = await res.json();
   document.getElementById("title").textContent = dict.title;
   document.getElementById("desc").textContent = dict.description;
