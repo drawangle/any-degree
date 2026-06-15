@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>角度を描画する</title>
+
+  <!-- Google AdSense（審査通過後に貼る） -->
+  <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR-ID"
+     crossorigin="anonymous"></script>-->
+  <style type="text/css">
+    /* 全体の基本リセット & スマホ向けの使いやすい設定 */
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent; /* タップ時の青い影を消す */
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* メインのコンテナ（スマホの横幅いっぱいに広がりつつ、最大幅を制限） */
+    .app-container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* タイトル */
+    h1 {
+      font-size: 1.2rem;
+      color: #333;
+      margin: 10px 0 0 0;
+    }
+
+
+    /* SVGエリアのラッパー（画面サイズに応じて自動縮小、正方形を維持） */
+    .svg-wrapper {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none; /* ドラッグ中のテキスト選択を防止 */
+    }
+    /* SVG本体（親要素の幅に合わせて100%可変する） */
+    #arc-slider {
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      touch-action: none; /* スマホでのスクロールを防止し、ドラッグを優先 */
+    }
+    .svgarc  {
+      width: 350px;
+      margin: 10px auto;
+    }
+    .inputtext {
+      width: 350px;
+      margin: 10px auto;
+    }
+ 
+
+    /* コントロールエリア（入力欄など） */
+    .control-panel {
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .control-label {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: bold;
+    }
+
+    /* 1. 入力欄とボタンを包むコンテナ（基準になる箱） */
+    .input-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* 入力欄のスマホ向け最適化スタイル */
+    #anydegree {
+      font-size: 28px; /* スマホでも見やすい大きな文字 */
+      font-weight: bold;
+      width: 8ch;
+      padding: 10px;
+      padding-right: 36px; /* ×ボタン用の余白 */
+      text-align: center;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      background-color: #f8fafc;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    /* 入力欄にフォーカスが当たったときの色変更 */
+    #anydegree:focus {
+      border-color: #3b82f6;
+      background-color: #ffffff;
+    }
+    #anydegree::placeholder {
+      color: #ccc; /* 薄いグレー */
+      opacity: 1;  /* Firefox対策（デフォルトで透明度が下がっているのをリセット） */
+    }
+
+    /* クリア用の×ボタン */
+    #clear-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0;
+      display: none; /* 初期は非表示 */
+      line-height: 1;
+    }
+
+    
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <h1>角度シミュレータ</h1>
+
+    <div class="svg-wrapper">
+      <!--
+      <form id="degree-form">
+        <div class="input-container">
+          <input type="text" inputmode="numeric" id="anydegree" placeholder="角度" size="8"/>
+          <button type="button" id="clear-btn">&times;</button>
+        </div>
+        <button onclick="drawangle_degree()">描画</button>
+      </form>
+      -->
+      <svg id="arc-slider" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <path d="M200,200 L400,200" fill="none" stroke="#FF9800" stroke-width="2" />
+        <g id="slider-knob" transform="rotate(90, 200, 200)">
+          <line x1="200" y1="200" x2="200" y2="35" stroke="#FF9800" stroke-width="8" stroke-linecap="round" />
+          <circle cx="200" cy="35" r="14" fill="#ffffff" stroke="#80CBC4" stroke-width="4" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.3))" />
+        </g>
+        <g id="spiral"  transform="rotate(0, 200, 200)"></g>
+        <g id="point" />
+        <text x="200" y="215" text-anchor="middle" font-family="sans-serif" font-size="48" font-weight="bold" fill="#333" id="angle-display">0°</text>
+      </svg>
+    </div>
+
+    <div class="control-panel">
+      <div class="control-label">角度を入力してEnter（0〜3000）</div>
+      
+      <div class="input-container">
+        <input type="text" inputmode="numeric" id="anydegree" placeholder="135" maxlength="8">
+        <button type="button" id="clear-btn">&times;</button>
+      </div>
+    </div>
+
+    <button id="copy-btn">SVGをコピー</button>
+
+
+  </div>
+
+
+
+  <script type="text/javascript">
+    const inputEl = document.getElementById('anydegree');
+    const clearBtn = document.getElementById('clear-btn');
+
+    const slider = document.getElementById('arc-slider');
+    const knob = document.getElementById('slider-knob');
+    const display = document.getElementById('angle-display');
+    const spiral = document.getElementById('spiral');
+    
+    let isDragging = false;
+    
+    // SVGの viewBox 内の中心座標
+    const centerX = 200;
+    const centerY = 200;
+    // 現在の累計角度
+    let finalAngle = 0;
+    let nlap = 0;
+    let old_y = 0;
+
+
+    // 初期状態として55度の円弧を最初に描画しておく
+    drawangle_degree(135);
+
+
+
+    // --- 入力イベントの処理 ---
+
+    // Enterキーを検知して描画関数を呼び出す
+    inputEl.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        //drawArc(inputEl.value);
+        drawangle_degree()
+        inputEl.blur(); // 入力完了したらスマホのキーボードを閉じる
+      }
+    });
+
+    // A. 入力欄に文字が入力されたら「×ボタン」を表示し、空なら非表示にする
+    inputEl.addEventListener('input', () => {
+      if (inputEl.value.length > 0) {
+        clearBtn.style.display = 'block'; // 文字があれば表示
+      } else {
+        clearBtn.style.display = 'none';  // 空なら非表示
+      }
+    });
+
+    // B. ×ボタンがクリックされたら、数値をクリアしてボタン自身も隠す
+    clearBtn.addEventListener('click', () => {
+      inputEl.value = '';             // 値をクリア
+      clearBtn.style.display = 'none'; // ボタンを非表示にする
+      inputEl.focus();                // クリア後、すぐ再入力できるようにフォーカスを戻す
+    });
+
+
+
+    /*
+    document.getElementById("degree-form").addEventListener("submit", function(event) {
+      // 画面がリロード（再読み込み）されるのを防ぐ決まり文句
+      event.preventDefault(); 
+      //const value = document.getElementById("anydegree").value;
+      drawangle_degree();
+    });
+    */
+
+ 
+
+    function drawangle_degree(any_degree = Number(document.getElementById("anydegree").value)) {
+     
+      finalAngle = any_degree;
+      angle = finalAngle % 360;
+      nlap = Math.floor(finalAngle / 360);
+      old_y = 0;
+
+      // 5. SVGのツマミを回転させ、テキストを更新
+      knob.setAttribute('transform', `rotate(${ 90 - angle}, ${centerX}, ${centerY})`);
+      display.textContent = `${finalAngle}°`;
+      // spiralの描画
+      drawangle(angle, finalAngle);
+    }
+
+    function drawangle(angle, finalAngle) {
+        // 3. SVG要素の作成 (名前空間の指定が必須)
+      const svgNS = "http://www.w3.org/2000/svg";
+      const path = document.createElementNS(svgNS, "path");
+      // 1. パスのコマンドを格納する配列を作る
+      const dSegments = [];
+      // 2. 最初の移動と直線をいれる
+      const [cx, cy] = [centerX, centerY];
+      const r = 70;
+      const [sx, sy] = [cx + r, cy]
+      let rad = (angle * Math.PI) / 180; // 度をラジアンに変換
+      //const rad = (finalAngle * Math.PI) / 180; // 度をラジアンに変換
+
+      dSegments.push(`M ${sx} ${sy}`);
+      let w = 10;
+      // 3. 後から好きなタイミングで追加していく
+      let _sx = sx;
+      // 上半分
+      for (let i=0; i<30; i++) { //360x30=10800
+        if (finalAngle >= 360*i+180) {
+          dSegments.push(`A 10 10  0 0 0  ${cx - r - w*i} ${cy}`);
+        }
+        else {
+          //半径
+          _r = (_sx - (cx - r - w*i)) / 2;
+          //中心x
+          _cx = _sx - _r;
+          ex = _cx + _r * Math.cos(rad);
+          ey = cy - _r * Math.sin(rad);
+          dSegments.push(`A ${_r} ${_r}  0 0 0  ${ex} ${ey}`);
+          break;
+        }
+        _sx = cx - r - w*i;
+        //下半分
+        if (finalAngle >= 360*i+360) {
+          dSegments.push(`A 10 10  0 0 0  ${cx + r + w + w*i} ${cy}`);
+        }
+        else {
+          //半径
+          _r = ((cx +r + w + w*i) - _sx) / 2;
+          //中心x
+          _cx = _sx + _r;
+          //回転角を少し戻す
+          rad -= 2*Math.PI/180
+          ex = _cx + _r * Math.cos(rad);
+          ey = cy - _r * Math.sin(rad);
+          dSegments.push(`A ${_r} ${_r}  0 0 0  ${ex} ${ey}`);
+          break;
+
+        }
+        _sx = cx + r + w + w*i;
+
+      }
+      // 最後に閉じたい場合はさらに push("Z") してもOK
+      //dSegments.push("Z");
+      
+
+      // 4. 配列をスペース区切りの文字列にして、d属性に一気にセットする
+      path.setAttribute("d", dSegments.join(" "));
+      path.setAttribute("stroke", "#ff4081");
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke-width", "6");
+
+      // 5. 要素を組み立てて画面に配置する
+      spiral.innerHTML = ""; // いま中にある path をすべて消去
+      spiral.appendChild(path); // svg g の中にpathを入れる
+
+      
+      // 矢印のやじり(point)を描画する
+      const point = document.getElementById('point');
+      const path_p = document.createElementNS(svgNS, "path");
+      let t = 6; //edge length
+      _r += 0.5;
+      ex = _cx + _r * Math.cos(rad);
+      ey = cy - _r * Math.sin(rad);
+      //console.log(angle, _r, _cx, cy)
+      path_p.setAttribute("d", `M${ex+t*0.5},${ey+t*2} L${ex},${ey} L${ex-t},${ey+t*2}`);
+      path_p.setAttribute("stroke", "#ff4081");
+      path_p.setAttribute("fill", "none");
+      path_p.setAttribute("stroke-width", "6");
+      path_p.setAttribute("stroke-linejoin", "round");
+      point.innerHTML = "";
+      point.appendChild(path_p);
+      let thet = Math.atan2(t, _r) * (180 / Math.PI);
+      //console.log("point_A: ",_r, t, thet);
+      point.setAttribute('transform', `rotate(${-(angle-thet/2)}, ${ex}, ${ey})`);
+      
+
+    }
+
+    // 角度を計算してUIを更新する関数
+    function updateAngle(event) {
+      // 1. スライダー（SVG）の画面上の位置とサイズを取得
+      const rect = slider.getBoundingClientRect();
+      
+      // 2. クリック/タッチされた位置を、SVG内の相対座標に変換
+      const x = event.clientX - rect.left - (rect.width / 2);
+      //const y = event.clientY - rect.top - (rect.height / 2);
+      const y = -(event.clientY - rect.top - (rect.height / 2));
+      // 3. Math.atan2 でラジアンを計算し、度（Degree）に変換
+      // 通常は右方向（3時）が0度になるため、+90度して上方向（12時）を0度にする
+      //let angle = Math.atan2(y, x) * (180 / Math.PI) +90;
+      let angle = Math.atan2(y, x) * (180 / Math.PI);// +90;
+      //console.log(event.clientX, event.clientY,  "x y :", x, y, Math.trunc(angle));
+      
+      let v = x**2 + y**2;
+      if (v < 50**2) {
+        // 15度ごとにする。
+        angle = Math.floor(angle/15) * 15;
+      }
+      else if (v < 100**2) {
+        // 1度ごとにする。
+        angle = Math.floor(angle/5) * 5;
+      }
+
+
+      // 4. 角度を 0 〜 360 度の範囲に補正
+      if (angle < 0) {
+        angle += 360;
+      }
+      // 小数点を切り捨て
+      finalAngle = Math.floor(angle);
+
+      if (x > 0 && old_y < 0 && y >= 0) {
+        nlap++;
+        //console.log('lap: ', nlap);
+      }
+      else if (x > 0 && old_y > 0 && y <= 0) {
+        nlap--;
+        nlap = Math.max(nlap,0);
+        //console.log('lap: ', nlap);
+      }
+      old_y = y;
+
+      finalAngle += 360 * nlap;
+
+
+      // 5. SVGのツマミを回転させ、テキストを更新
+      knob.setAttribute('transform', `rotate(${ 90 - angle}, ${centerX}, ${centerY})`);
+      display.textContent = `${finalAngle}°`;
+      document.getElementById("anydegree").value = finalAngle;
+      clearBtn.style.display = 'block'; // 文字があれば消去☓を表示
+
+    
+      /////////////////////////////////////////////
+      // ここで目的の数値をJavaScriptの他の処理に渡せます
+      /////////////////////////////////////////////
+      // console.log("現在の中心角:", finalAngle);
+      // spiralの描画
+      drawangle(angle, finalAngle);
+
+    }
+    
+    // --- イベントリスナーの設定（Pointer Events） ---
+    
+    // スライダーの上でクリック/タッチされた時
+    slider.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      slider.setPointerCapture(e.pointerId); // マウスが要素外に出ても追跡を維持
+      updateAngle(e);
+    });
+    
+    // 動かしている時
+    slider.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      updateAngle(e);
+    });
+    
+    // 離された時
+    slider.addEventListener('pointerup', (e) => {
+      isDragging = false;
+      slider.releasePointerCapture(e.pointerId);
+    });
+
+  </script>
+
+  <script>
+// ユーザーのクリックイベント（onClickなど）の直下でこの関数を呼び出してください
+async function copySvgToClipboardAsPng() {
+  try {
+    // 1. クリップボードへの書き込みを即座に開始（スマホのセキュリティ対策）
+    const item = new ClipboardItem({
+      "image/png": new Promise((resolve, reject) => {
+        
+        // ① SVG要素を取得してBlob化
+        const svg = document.getElementById('arc-slider');
+        if (!svg) {
+          reject(new Error("SVG要素が見つかりません"));
+          return;
+        }
+        
+        // サイズ（viewBoxまたは属性から取得、デフォルト400）
+        const width = svg.viewBox?.baseVal?.width || svg.width?.baseVal?.value || 400;
+        const height = svg.viewBox?.baseVal?.height || svg.height?.baseVal?.value || 400;
+        
+        const svgString = new XMLSerializer().serializeToString(svg);
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const blobURL = URL.createObjectURL(svgBlob);
+        
+        // ② SVGを一度Imageオブジェクトに読み込ませる
+        const img = new Image();
+        img.src = blobURL;
+        
+        img.onload = () => {
+          // ③ 読み込み完了後、メモリ上にCanvasを作成して描画
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2ctx' in window ? '2d' : '2d'); // 一般的な2Dコンテキスト
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // ④ CanvasからPNGのBlobを取り出してPromiseを解決（resolve）
+          canvas.toBlob((pngBlob) => {
+            URL.revokeObjectURL(blobURL); // メモリ解放
+            if (pngBlob) {
+              resolve(pngBlob);
+            } else {
+              reject(new Error("PNGへの変換に失敗しました"));
+            }
+          }, "image/png");
+        };
+        
+        img.onerror = (err) => {
+          URL.revokeObjectURL(blobURL);
+          reject(err);
+        };
+      })
+    });
+
+    // 2. クリップボードへ書き込みを実行
+    await navigator.clipboard.write([item]);
+    alert("画像をクリップボードにコピーしました！他のアプリに貼り付けできます。");
+
+  } catch (err) {
+    console.error("コピーに失敗しました:", err);
+    alert("クリップボードへのコピーに失敗したか、お使いのブラウザが対応していません。");
+  }
+}
+    document.getElementById("copy-btn").addEventListener("click", () => {
+      // ここで上記の関数を呼び出す
+      copySvgToClipboardAsPng();
+    });
+  </script>
+
+</body>
+</html>
