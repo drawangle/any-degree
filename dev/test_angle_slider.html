@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google AdSense（審査通過後に貼る） -->
+  <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR-ID"
+     crossorigin="anonymous"></script>-->
+  <style type="text/css">
+    .slider-wrapper {
+      width: 350px;
+      height: 350px;
+      margin: 50px auto;
+      user-select: none; /* ドラッグ中のテキスト選択を防止 */
+    }
+    
+    #arc-slider {
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      touch-action: none; /* スマホでのスクロールを防止し、ドラッグを優先 */
+    }
+    
+  </style>
+</head>
+
+<body>
+  <div class="slider-wrapper">
+    <svg id="arc-slider" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="200" r="150" fill="none" stroke="#e0e0e0" stroke-width="12" stroke-dasharray="700 300" stroke-dashoffset="150" transform="rotate(90 200 200)" />
+      
+      <g id="slider-knob" transform="rotate(0, 200, 200)">
+        <line x1="200" y1="200" x2="200" y2="35" stroke="#4facfe" stroke-width="8" stroke-linecap="round" />
+        <circle cx="200" cy="35" r="14" fill="#ffffff" stroke="#00f2fe" stroke-width="4" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.3))" />
+      </g>
+  
+      <text x="200" y="215" text-anchor="middle" font-family="sans-serif" font-size="48" font-weight="bold" fill="#333" id="angle-display">0°</text>
+    </svg>
+  </div>
+  <hr>
+
+
+  
+  <input type="text" inputmode="numeric" id="num" placeholder="半径を入力">
+  <button onclick="draw()">描画</button>
+
+  <!-- 広告枠 -->
+  <!--
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="YOUR-ID"
+       data-ad-slot="1234567890"
+       data-ad-format="auto"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <div id="svgArea"></div>
+
+  <script>
+    function draw() {
+      const r = Number(document.getElementById("num").value);
+      const svg = `
+        <svg width="300" height="300">
+          <circle cx="150" cy="150" r="${r}" fill="skyblue" stroke="black"/>
+        </svg>`;
+      document.getElementById("svgArea").innerHTML = svg;
+    }
+  </script>
+    <script type="text/javascript">
+    const slider = document.getElementById('arc-slider');
+    const knob = document.getElementById('slider-knob');
+    const display = document.getElementById('angle-display');
+    
+    let isDragging = false;
+    
+    // SVGの viewBox 内の中心座標
+    const centerX = 200;
+    const centerY = 200;
+    
+    // 角度を計算してUIを更新する関数
+    function updateAngle(event) {
+      // 1. スライダー（SVG）の画面上の位置とサイズを取得
+      const rect = slider.getBoundingClientRect();
+      
+      // 2. クリック/タッチされた位置を、SVG内の相対座標に変換
+      const x = event.clientX - rect.left - (rect.width / 2);
+      const y = event.clientY - rect.top - (rect.height / 2);
+    
+      // 3. Math.atan2 でラジアンを計算し、度（Degree）に変換
+      // 通常は右方向（3時）が0度になるため、+90度して上方向（12時）を0度にする
+      let angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
+    
+      // 4. 角度を 0 〜 360 度の範囲に補正
+      if (angle < 0) {
+        angle += 360;
+      }
+    
+      // 小数点を切り捨て
+      const finalAngle = Math.floor(angle);
+    
+      // 5. SVGのツマミを回転させ、テキストを更新
+      knob.setAttribute('transform', `rotate(${finalAngle}, ${centerX}, ${centerY})`);
+      display.textContent = `${finalAngle}°`;
+    
+      // ここで目的の数値をJavaScriptの他の処理に渡せます
+      // console.log("現在の中心角:", finalAngle);
+    }
+    
+    // --- イベントリスナーの設定（Pointer Events） ---
+    
+    // スライダーの上でクリック/タッチされた時
+    slider.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      slider.setPointerCapture(e.pointerId); // マウスが要素外に出ても追跡を維持
+      updateAngle(e);
+    });
+    
+    // 動かしている時
+    slider.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      updateAngle(e);
+    });
+    
+    // 離された時
+    slider.addEventListener('pointerup', (e) => {
+      isDragging = false;
+      slider.releasePointerCapture(e.pointerId);
+    });
+
+    
+  </script>
+
+</body>
+</html>
