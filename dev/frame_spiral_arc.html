@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="spiral-title">Draw Angle</title>
+
+  <!-- Google AdSense（審査通過後に貼る） -->
+  <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR-ID"
+     crossorigin="anonymous"></script>-->
+  <style type="text/css">
+  </style>
+    <!--
+    /* ボタンの見た目をスマホ向けに少しリッチにする（参考） */
+    .container button {
+      flex: 1;                /* 2つのボタンを同じ幅にする */
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(59, 130, 246, 0.9); /* 少し透ける青（背景がSVGなので） */
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    -->
+  <link rel="stylesheet" href="arc-main.css">
+
+
+</head>
+
+<body>
+  <div class="app-container">
+    <h1 id="spiral-head">Angle Simulator</h1>
+
+    <div class="svg-wrapper">
+      <!--
+      <svg id="arc-slider" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <path d="M200,200 L400,200" fill="none" stroke="#FF9800" stroke-width="2" />
+        <g id="slider-knob" transform="rotate(90, 200, 200)">
+          <line x1="200" y1="200" x2="200" y2="35" stroke="#FF9800" stroke-width="8" stroke-linecap="round" />
+          <circle cx="200" cy="35" r="14" fill="#ffffff" stroke="#7B1FA2" stroke-width="4" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.3))" />
+        </g>
+        <g id="spiral"  transform="rotate(0, 200, 200)"></g>
+        <g id="point" />
+        <text x="200" y="215" text-anchor="middle" font-family="sans-serif" font-size="48" font-weight="bold" fill="#333" id="angle-display">0°</text>
+      </svg>
+      -->
+      <div class="container">
+          <button id="copy-svg-btn">To SVG</button>
+          <button id="copy-png-btn">To PNG</button>
+      </div>
+    </div>
+
+
+    <div class="control-panel">
+      <div class="control-label" id="control-label">Enter the angle</div>
+      
+      <div class="input-container">
+        <input type="text" inputmode="numeric" id="anydegree" placeholder="135" maxlength="8">
+        <button type="button" id="clear-btn">&times;</button>
+      </div>
+    </div>
+
+
+  </div>
+
+  <script src="app-main.js"></script>
+
+  <script src="svg-tools.js"></script>
+
+  <script>
+  async function loadLang() {
+    const path = window.location.pathname.split("/")[1]; // repo名
+    const res = await fetch(`/${path}/lang/ja.json`);
+    const dict = await res.json();
+    //document.getElementById("title").textContent = dict.title;
+    //document.getElementById("desc").textContent = dict.description;
+
+    //const iframe = document.getElementById("spiralFrame");
+    //const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    const iframeDoc = document;
+    //iframeDoc.getElementById("title").textContent = dict.title;
+    //iframeDoc.getElementById("desc").textContent = dict.description;
+
+    iframeDoc.getElementById("spiral-title").textContent = dict.spiral_title;
+    iframeDoc.getElementById("spiral-head").textContent = dict.spiral_head;
+    iframeDoc.getElementById("copy-svg-btn").textContent = dict.copy_svg_btn;
+    iframeDoc.getElementById("copy-png-btn").textContent = dict.copy_png_btn;
+    iframeDoc.getElementById("control-label").textContent = dict.control_label;
+
+    // contentWindow を使用して iframe 内の window にアクセス
+    //const iframeWin = iframe.contentWindow;
+    const iframeWin = this;
+    // ハッシュ変数の値を書き換え
+    iframeWin.mes["tosvg_success"] = dict.tosvg_success;
+    iframeWin.mes["topng_success"] = dict.topng_success;
+    iframeWin.mes["copy_error"] = dict.copy_error;
+    iframeWin.mes["svg_notfound"] = dict.svg_notfound;
+    iframeWin.mes["png_error"] = dict.png_error;
+    
+  }
+  loadLang();
+  /**
+  const iframe = document.getElementById("spiralFrame");
+  // 2. iframe の読み込み完了後に操作する
+  iframe.addEventListener("load", () => {
+      loadLang();
+  });
+  */
+  </script>
+
+
+
+</body>
+</html>
