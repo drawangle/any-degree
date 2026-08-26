@@ -35,7 +35,7 @@ title: "角度シミュレーター"
   id="spiralFrame"
   title="Inline Frame Example"
   frameborder="0"
-  src="https://drawangle.github.io/any-degree/dev/frame_spiral_arc.html">
+  src="https://drawangle.github.io/any-degree/dev/test_angle_slider.html">
 </iframe>
 設計、作図、デザイン、学習、新しい発見のために、このツールをぜひご利用ください。
 
