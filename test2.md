@@ -1,3 +1,22 @@
+<style type="text/css">
+  blockquote[data-callout="tip"] {
+    border-left: 4px solid #2ecc71;
+    background: #f0fff4;
+    padding: 0.5em 1em;
+  }
+</style>
+
+
+---
+title: "角度シミュレーター"
+---
+
+[ホーム](../index.html) | [概要](../about.html) | [プライバシーポリシー](../privacy.html) | [お問い合わせ](../contact.html)
+
+---
+
+
+
 
 Text that is not a quote
 
@@ -21,6 +40,18 @@ Will span two lines
 
 This example<br/>
 Will span two lines
+
+
+> <div data-callout="tip">
+> 💡 **Tip**  
+> Helpful advice for doing things better or more easily.
+> </div>
+
+> <div data-callout="tip">
+> 💡 **Tip**  
+> SVG画像を改造したいときも同じようにテキスト編集で修正することができます。
+> </div>
+
 
 > [!TIP]
 > SVG画像を改造したいときも同じようにテキスト編集で修正することができます。
