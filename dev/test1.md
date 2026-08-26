@@ -3,7 +3,7 @@
 > SVG画像を改造したいときも同じようにテキスト編集で修正することができます。
 
 > [!TIP]
-> SVG画像を　改造したいときも同じようにテキスト編集で修正することができます。
+> SVG画像を改造したいときも同じようにテキスト編集で修正することができます。
 
 > [!NOTE]
 > Useful information that users should know, even when skimming content.
@@ -21,7 +21,7 @@
 > Advises about risks or negative outcomes of certain actions.
 
 > [!NOTE]
-> SVGイラストを　改造したいときも同じ手順で修正することができます。
+> SVGイラストを改造したいときも同じ手順で修正することができます。
 
 
 
