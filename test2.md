@@ -8,6 +8,15 @@ title: "角度シミュレーター"
 ---
 
 
+> [!TIP]
+> SVG画像を改造したいときも同じようにテキスト編集で修正することができます。
+
+<blockquote class="markdown-alert-tip">
+<p>SVG画像を改造したいときも同じようにテキスト編集で修正することができます。</p>
+</blockquote>
+
+
+
 
 
 Text that is not a quote
